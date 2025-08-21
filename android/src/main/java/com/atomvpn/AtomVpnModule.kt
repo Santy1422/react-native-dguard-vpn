@@ -386,6 +386,174 @@ class AtomVpnModule(reactContext: ReactApplicationContext) :
         promise.resolve(gson.toJson(data))
     }
 
+    @ReactMethod
+    fun quickConnect(promise: Promise) {
+        if (!isInitialized || atomManager == null) {
+            promise.reject("NOT_INITIALIZED", "DGuard VPN SDK not initialized")
+            return
+        }
+
+        try {
+            // Get recommended location first
+            atomManager?.getRecommendedLocation(object : CollectionCallback<Country> {
+                override fun onSuccess(countries: List<Country>?) {
+                    if (countries != null && countries.isNotEmpty()) {
+                        // Use recommended country
+                        val recommendedCountry = countries[0]
+                        
+                        // Get protocols to find best one
+                        atomManager?.getProtocols(object : CollectionCallback<Protocol> {
+                            override fun onSuccess(protocols: List<Protocol>?) {
+                                if (protocols != null && protocols.isNotEmpty()) {
+                                    // Prefer IKEv2, then OpenVPN UDP, then first available
+                                    val bestProtocol = protocols.find { it.protocol == "ikev2" }
+                                        ?: protocols.find { it.protocol == "openvpn_udp" }
+                                        ?: protocols[0]
+                                    
+                                    // Build connection properties
+                                    val vpnPropertiesBuilder = VPNProperties.Builder(recommendedCountry, bestProtocol)
+                                        .withOptimization()
+                                        .withSmartDialing()
+                                        .withAutomaticPort()
+                                    
+                                    val activity = currentActivity
+                                    if (activity != null) {
+                                        atomManager?.connect(activity, vpnPropertiesBuilder.build())
+                                        promise.resolve(null)
+                                    } else {
+                                        promise.reject("NO_ACTIVITY", "No current activity available")
+                                    }
+                                } else {
+                                    promise.reject("NO_PROTOCOLS", "No protocols available")
+                                }
+                            }
+                            
+                            override fun onError(exception: AtomException) {
+                                promise.reject("PROTOCOLS_ERROR", exception.message, exception)
+                            }
+                            
+                            override fun onNetworkError(exception: AtomException) {
+                                promise.reject("PROTOCOLS_NETWORK_ERROR", exception.message, exception)
+                            }
+                        })
+                    } else {
+                        // Fallback to first available country
+                        atomManager?.getCountries(object : CollectionCallback<Country> {
+                            override fun onSuccess(allCountries: List<Country>?) {
+                                if (allCountries != null && allCountries.isNotEmpty()) {
+                                    val fallbackCountry = allCountries[0]
+                                    
+                                    atomManager?.getProtocols(object : CollectionCallback<Protocol> {
+                                        override fun onSuccess(protocols: List<Protocol>?) {
+                                            if (protocols != null && protocols.isNotEmpty()) {
+                                                val bestProtocol = protocols.find { it.protocol == "ikev2" }
+                                                    ?: protocols.find { it.protocol == "openvpn_udp" }
+                                                    ?: protocols[0]
+                                                
+                                                val vpnPropertiesBuilder = VPNProperties.Builder(fallbackCountry, bestProtocol)
+                                                    .withOptimization()
+                                                    .withSmartDialing()
+                                                    .withAutomaticPort()
+                                                
+                                                val activity = currentActivity
+                                                if (activity != null) {
+                                                    atomManager?.connect(activity, vpnPropertiesBuilder.build())
+                                                    promise.resolve(null)
+                                                } else {
+                                                    promise.reject("NO_ACTIVITY", "No current activity available")
+                                                }
+                                            } else {
+                                                promise.reject("NO_PROTOCOLS", "No protocols available")
+                                            }
+                                        }
+                                        
+                                        override fun onError(exception: AtomException) {
+                                            promise.reject("PROTOCOLS_ERROR", exception.message, exception)
+                                        }
+                                        
+                                        override fun onNetworkError(exception: AtomException) {
+                                            promise.reject("PROTOCOLS_NETWORK_ERROR", exception.message, exception)
+                                        }
+                                    })
+                                } else {
+                                    promise.reject("NO_COUNTRIES", "No countries available")
+                                }
+                            }
+                            
+                            override fun onError(exception: AtomException) {
+                                promise.reject("COUNTRIES_ERROR", exception.message, exception)
+                            }
+                            
+                            override fun onNetworkError(exception: AtomException) {
+                                promise.reject("COUNTRIES_NETWORK_ERROR", exception.message, exception)
+                            }
+                        })
+                    }
+                }
+                
+                override fun onError(exception: AtomException) {
+                    // Fallback to regular countries if recommended location fails
+                    atomManager?.getCountries(object : CollectionCallback<Country> {
+                        override fun onSuccess(allCountries: List<Country>?) {
+                            if (allCountries != null && allCountries.isNotEmpty()) {
+                                val fallbackCountry = allCountries[0]
+                                
+                                atomManager?.getProtocols(object : CollectionCallback<Protocol> {
+                                    override fun onSuccess(protocols: List<Protocol>?) {
+                                        if (protocols != null && protocols.isNotEmpty()) {
+                                            val bestProtocol = protocols.find { it.protocol == "ikev2" }
+                                                ?: protocols.find { it.protocol == "openvpn_udp" }
+                                                ?: protocols[0]
+                                            
+                                            val vpnPropertiesBuilder = VPNProperties.Builder(fallbackCountry, bestProtocol)
+                                                .withOptimization()
+                                                .withSmartDialing()
+                                                .withAutomaticPort()
+                                            
+                                            val activity = currentActivity
+                                            if (activity != null) {
+                                                atomManager?.connect(activity, vpnPropertiesBuilder.build())
+                                                promise.resolve(null)
+                                            } else {
+                                                promise.reject("NO_ACTIVITY", "No current activity available")
+                                            }
+                                        } else {
+                                            promise.reject("NO_PROTOCOLS", "No protocols available")
+                                        }
+                                    }
+                                    
+                                    override fun onError(exception: AtomException) {
+                                        promise.reject("PROTOCOLS_ERROR", exception.message, exception)
+                                    }
+                                    
+                                    override fun onNetworkError(exception: AtomException) {
+                                        promise.reject("PROTOCOLS_NETWORK_ERROR", exception.message, exception)
+                                    }
+                                })
+                            } else {
+                                promise.reject("NO_COUNTRIES", "No countries available")
+                            }
+                        }
+                        
+                        override fun onError(exception: AtomException) {
+                            promise.reject("COUNTRIES_ERROR", exception.message, exception)
+                        }
+                        
+                        override fun onNetworkError(exception: AtomException) {
+                            promise.reject("COUNTRIES_NETWORK_ERROR", exception.message, exception)
+                        }
+                    })
+                }
+                
+                override fun onNetworkError(exception: AtomException) {
+                    promise.reject("RECOMMENDED_LOCATION_NETWORK_ERROR", exception.message, exception)
+                }
+            })
+        } catch (e: Exception) {
+            promise.reject("QUICK_CONNECT_ERROR", e.message, e)
+        }
+    }
+
     private fun createVPNPropertiesBuilder(properties: Map<String, Any>): VPNProperties.Builder {
         var builder: VPNProperties.Builder? = null
 

@@ -386,6 +386,146 @@ RCT_EXPORT_METHOD(getAtomShieldData:(RCTPromiseResolveBlock)resolve
     }
 }
 
+RCT_EXPORT_METHOD(quickConnect:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!self.isInitialized || !self.atomManager) {
+        reject(@"NOT_INITIALIZED", @"ATOM SDK not initialized", nil);
+        return;
+    }
+    
+    @try {
+        // Get optimized countries first
+        [self.atomManager getOptimizedCountriesWithSuccess:^(NSArray<AtomCountry *> *countries) {
+            if (countries && countries.count > 0) {
+                AtomCountry *recommendedCountry = countries[0];
+                
+                // Get protocols
+                [self.atomManager getProtocolsWithSuccess:^(NSArray<AtomProtocol *> *protocols) {
+                    if (protocols && protocols.count > 0) {
+                        // Find best protocol (prefer IKEv2, then OpenVPN UDP)
+                        AtomProtocol *bestProtocol = nil;
+                        for (AtomProtocol *protocol in protocols) {
+                            if ([protocol.protocol isEqualToString:@"ikev2"]) {
+                                bestProtocol = protocol;
+                                break;
+                            }
+                        }
+                        if (!bestProtocol) {
+                            for (AtomProtocol *protocol in protocols) {
+                                if ([protocol.protocol isEqualToString:@"openvpn_udp"]) {
+                                    bestProtocol = protocol;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!bestProtocol) {
+                            bestProtocol = protocols[0];
+                        }
+                        
+                        // Create properties with optimization
+                        AtomProperties *properties = [[AtomProperties alloc] initWithCountry:recommendedCountry protocol:bestProtocol];
+                        properties.useOptimization = YES;
+                        properties.useSmartDialing = YES;
+                        
+                        // Connect
+                        [self.atomManager connectWithProperties:properties completion:^(NSString *success) {
+                            resolve(nil);
+                        } errorBlock:^(NSError *error) {
+                            reject(@"QUICK_CONNECT_ERROR", error.localizedDescription, error);
+                        }];
+                    } else {
+                        reject(@"NO_PROTOCOLS", @"No protocols available", nil);
+                    }
+                } errorBlock:^(NSError *error) {
+                    reject(@"PROTOCOLS_ERROR", error.localizedDescription, error);
+                }];
+            } else {
+                // Fallback to regular countries
+                [self.atomManager getCountriesWithSuccess:^(NSArray<AtomCountry *> *countries) {
+                    if (countries && countries.count > 0) {
+                        AtomCountry *fallbackCountry = countries[0];
+                        
+                        [self.atomManager getProtocolsWithSuccess:^(NSArray<AtomProtocol *> *protocols) {
+                            if (protocols && protocols.count > 0) {
+                                AtomProtocol *bestProtocol = nil;
+                                for (AtomProtocol *protocol in protocols) {
+                                    if ([protocol.protocol isEqualToString:@"ikev2"]) {
+                                        bestProtocol = protocol;
+                                        break;
+                                    }
+                                }
+                                if (!bestProtocol) {
+                                    for (AtomProtocol *protocol in protocols) {
+                                        if ([protocol.protocol isEqualToString:@"openvpn_udp"]) {
+                                            bestProtocol = protocol;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!bestProtocol) {
+                                    bestProtocol = protocols[0];
+                                }
+                                
+                                AtomProperties *properties = [[AtomProperties alloc] initWithCountry:fallbackCountry protocol:bestProtocol];
+                                properties.useOptimization = YES;
+                                properties.useSmartDialing = YES;
+                                
+                                [self.atomManager connectWithProperties:properties completion:^(NSString *success) {
+                                    resolve(nil);
+                                } errorBlock:^(NSError *error) {
+                                    reject(@"QUICK_CONNECT_ERROR", error.localizedDescription, error);
+                                }];
+                            } else {
+                                reject(@"NO_PROTOCOLS", @"No protocols available", nil);
+                            }
+                        } errorBlock:^(NSError *error) {
+                            reject(@"PROTOCOLS_ERROR", error.localizedDescription, error);
+                        }];
+                    } else {
+                        reject(@"NO_COUNTRIES", @"No countries available", nil);
+                    }
+                } errorBlock:^(NSError *error) {
+                    reject(@"COUNTRIES_ERROR", error.localizedDescription, error);
+                }];
+            }
+        } errorBlock:^(NSError *error) {
+            // Fallback to regular countries if optimized fails
+            [self.atomManager getCountriesWithSuccess:^(NSArray<AtomCountry *> *countries) {
+                if (countries && countries.count > 0) {
+                    AtomCountry *fallbackCountry = countries[0];
+                    
+                    [self.atomManager getProtocolsWithSuccess:^(NSArray<AtomProtocol *> *protocols) {
+                        if (protocols && protocols.count > 0) {
+                            AtomProtocol *bestProtocol = protocols[0];
+                            
+                            AtomProperties *properties = [[AtomProperties alloc] initWithCountry:fallbackCountry protocol:bestProtocol];
+                            properties.useOptimization = YES;
+                            properties.useSmartDialing = YES;
+                            
+                            [self.atomManager connectWithProperties:properties completion:^(NSString *success) {
+                                resolve(nil);
+                            } errorBlock:^(NSError *error) {
+                                reject(@"QUICK_CONNECT_ERROR", error.localizedDescription, error);
+                            }];
+                        } else {
+                            reject(@"NO_PROTOCOLS", @"No protocols available", nil);
+                        }
+                    } errorBlock:^(NSError *error) {
+                        reject(@"PROTOCOLS_ERROR", error.localizedDescription, error);
+                    }];
+                } else {
+                    reject(@"NO_COUNTRIES", @"No countries available", nil);
+                }
+            } errorBlock:^(NSError *error) {
+                reject(@"COUNTRIES_ERROR", error.localizedDescription, error);
+            }];
+        }];
+    } @catch (NSException *exception) {
+        reject(@"QUICK_CONNECT_ERROR", exception.reason, nil);
+    }
+}
+
 #pragma mark - Helper Methods
 
 - (AtomProperties *)createAtomPropertiesFromDict:(NSDictionary *)dict
@@ -395,7 +535,7 @@ RCT_EXPORT_METHOD(getAtomShieldData:(RCTPromiseResolveBlock)resolve
     // Handle dedicated IP
     NSString *dedicatedIP = dict[@"dedicatedIP"];
     if (dedicatedIP && dedicatedIP.length > 0) {
-        properties = [[AtomProperties alloc] initWithDedicatedHostName:dedicatedIP];
+        properties = [[AtomProperties alloc] initWithDedicatedIP:dedicatedIP];
     } else {
         // Handle country/city and protocol
         NSString *countryCode = dict[@"country"];
@@ -511,8 +651,8 @@ RCT_EXPORT_METHOD(getAtomShieldData:(RCTPromiseResolveBlock)resolve
         @"name": country.name ?: @"",
         @"country": country.country ?: @"",
         @"code": country.country ?: @"",
-        @"countryId": @(country.countryId),
-        @"latency": @(country.latency),
+        @"countryId": country.country ?: @"",
+        @"latency": @0,
         @"protocols": protocols
     };
 }
@@ -569,7 +709,7 @@ RCT_EXPORT_METHOD(getAtomShieldData:(RCTPromiseResolveBlock)resolve
 {
     NSDictionary *details = @{
         @"isConnected": @NO,
-        @"cancelled": @(atomConnectionDetails.cancelled)
+        @"cancelled": @(atomConnectionDetails.isCancelled)
     };
     [self sendEventWithName:@"AtomVPN:onDisconnectedWithDetails" body:details];
 }
