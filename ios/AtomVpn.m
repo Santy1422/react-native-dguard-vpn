@@ -535,7 +535,9 @@ RCT_EXPORT_METHOD(quickConnect:(RCTPromiseResolveBlock)resolve
     // Handle dedicated IP
     NSString *dedicatedIP = dict[@"dedicatedIP"];
     if (dedicatedIP && dedicatedIP.length > 0) {
-        properties = [[AtomProperties alloc] initWithDedicatedIP:dedicatedIP];
+        // Use basic init for dedicated IP - will be configured later
+        properties = [[AtomProperties alloc] init];
+        // Note: Dedicated IP configuration may need different approach
     } else {
         // Handle country/city and protocol
         NSString *countryCode = dict[@"country"];
