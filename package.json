@@ -1,6 +1,6 @@
 {
   "name": "react-native-dguard-vpn",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "DGuard VPN - React Native library for secure VPN connection with ATOM SDK integration and Expo Development Builds support",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
