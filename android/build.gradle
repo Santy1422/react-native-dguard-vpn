@@ -1,0 +1,77 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+    namespace "com.atomvpn"
+    compileSdk safeExtGet('compileSdkVersion', 34)
+    
+    defaultConfig {
+        minSdk safeExtGet('minSdkVersion', 22)
+        targetSdk safeExtGet('targetSdkVersion', 34)
+        versionCode 1
+        versionName "1.0.0"
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    lintOptions {
+        disable 'GradleCompatible'
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    configurations {
+        all { 
+            exclude group: "xpp3", module: "xpp3_min"
+        }
+    }
+
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
+}
+
+repositories {
+    mavenCentral()
+    google()
+    maven { 
+        url "https://bitbucket.org/purevpn/atom-android-releases/raw/master"
+    }
+    maven { 
+        url 'https://jitpack.io'
+        credentials { username authToken ?: 'jp_l1hv3212tltdau845qago2l4e' }
+    }
+}
+
+dependencies {
+    implementation 'com.facebook.react:react-native:+'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+    
+    // ATOM SDK dependency - exact version from demo
+    implementation 'org.bitbucket.purevpn:purevpn-sdk-android:6.0.4'
+    
+    // Required dependencies from demo
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}

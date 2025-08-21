@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "react-native-dguard-vpn": "^1.0.0"
+  },
+  "expo": {
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "35.0.0",
+            "minSdkVersion": 22
+          },
+          "ios": {
+            "deploymentTarget": "12.0"
+          }
+        }
+      ]
+    ]
+  },
+  "note": "Add react-native-dguard-vpn to your main package.json dependencies section"
+}
