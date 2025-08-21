@@ -57,7 +57,7 @@ repositories {
     }
     maven { 
         url 'https://jitpack.io'
-        credentials { username authToken ?: 'jp_l1hv3212tltdau845qago2l4e' }
+        credentials { username project.findProperty('authToken') ?: 'jp_l1hv3212tltdau845qago2l4e' }
     }
 }
 
