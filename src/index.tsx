@@ -36,7 +36,7 @@ class AtomVpnSDK implements AtomVpnSdk {
   private isInitialized: boolean = false;
 
   constructor() {
-    this.eventEmitter = new NativeEventEmitter(NativeAtomVpn);
+    this.eventEmitter = new NativeEventEmitter(NativeAtomVpn as any);
   }
 
   /**
