@@ -15,7 +15,7 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 // Define the native module interface based on platform
-type AtomVpnNativeModule = Platform.OS === 'android' 
+type AtomVpnNativeModule = typeof Platform.OS extends 'android' 
   ? AtomVpnNativeModuleAndroid 
   : AtomVpnNativeModuleIOS;
 
