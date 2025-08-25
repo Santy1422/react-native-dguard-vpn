@@ -1,0 +1,107 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+    namespace "com.atomvpn"
+    compileSdk safeExtGet('compileSdkVersion', 34)
+    
+    defaultConfig {
+        minSdk safeExtGet('minSdkVersion', 24)
+        targetSdk safeExtGet('targetSdkVersion', 34)
+        versionCode 1
+        versionName "1.0.0"
+        multiDexEnabled true
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            multiDexEnabled true
+            minifyEnabled false
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    lintOptions {
+        disable 'GradleCompatible'
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    configurations {
+        all { 
+            exclude group: "xpp3", module: "xpp3_min"
+        }
+    }
+
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+        jniLibs { 
+            useLegacyPackaging true 
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    google()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation 'com.facebook.react:react-native:+'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+    
+    // Gson dependency for JSON parsing - required by ATOM SDK
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // Required AndroidX dependencies
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
+    // ATOM SDK - Use actual ATOM SDK files from your GitHub
+    // Main ATOM SDK implementation
+    implementation files('libs/AtomSdk-6.0.4.aar')
+    
+    // Optional: IKS module if needed for advanced features
+    // implementation files('libs/AtomIKS-6.0.4.aar')
+    
+    // Exclude conflicting files to prevent duplicates
+    // implementation files('libs/purevpn-sdk-android-6.0.4.aar') // DISABLED - causes duplicates
+    // implementation fileTree(include: ['*.jar'], dir: 'libs') // DISABLED - causes duplicates
+    
+    // Additional required dependencies for ATOM SDK - matching versions
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    
+    // Additional dependencies that might be needed by ATOM SDK - compatible versions
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.9.22'
+    
+    // Network dependencies - compatible versions
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+}

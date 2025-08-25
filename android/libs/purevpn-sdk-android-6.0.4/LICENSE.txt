@@ -1,0 +1,117 @@
+		 	 	 		
+			
+	The MIT License Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+Software, and to permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+
+						
+The above copyright notice and this permission notice shall be included in all copies
+or substantial portions of the Software.
+
+
+						
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'''
+
+
+PureVPN willingly shares the source code of Third-Party Content, including any modifications made by PureVPN in adherence to the respective license terms governing such Third-Party Content. To obtain access to this source code, interested parties may submit a written request to PureVPN at the following email address: support@purevpn.com. Your request will be promptly addressed, ensuring transparency and compliance with the applicable license terms for the Third-Party Content.
+									
+ =======================================
+ Third party licences and Acknowledgment
+ =======================================
+
+
+						
+Note that not all files in the Atom SDK repository and in the released software
+packages belong to the Atom SDK project. For third party files, the individual
+licences apply.
+
+
+						
+   Retrofit (https://github.com/square/retrofit) Copyright (C) 2013 Square, Inc.
+    Licensed under the Apache License, Version 2.0
+    https://github.com/square/retrofit/blob/master/LICENSE.txt
+
+
+						
+   Okio (https://github.com/square/okio) Copyright (C) 2013 Square, Inc. Licensed
+    under the Apache License, Version 2.0
+    https://github.com/square/okio/blob/master/LICENSE.txt
+
+
+						
+   Okio (https://github.com/square/okhttp) Copyright (C) 2013 Square, Inc.
+    Licensed under the Apache License, Version 2.0
+    https://github.com/square/okhttp/blob/master/LICENSE.txt
+
+
+						
+   Gson (https://github.com/google/gson) Copyright (C) 2008 Google Inc. Licensed
+    under the Apache License, Version 2.0
+    https://github.com/google/gson/blob/main/LICENSE
+
+
+						
+   Dagger (https://github.com/google/dagger) Copyright (C) 2008 Google Inc.
+    Licensed under the Apache License, Version 2.0
+    https://github.com/google/dagger/blob/master/LICENSE.txt
+
+
+						
+   OpenVPN for Android (https://github.com/schwabe/ics-openvpn) Copyright (c)
+    2012-2022, Arne Schwabe https://github.com/schwabe/ics-
+    openvpn/blob/master/doc/LICENSE.txt
+
+
+						
+   WireGuard Android (https://github.com/WireGuard/wireguard-android) Licensed
+    under the Apache License, Version 2.0 https://github.com/WireGuard/wireguard-
+    android/blob/master/COPYING
+
+
+   Strongswan Android (https://github.com/strongswan/strongswan) License  
+   (https://github.com/strongswan/strongswan/blob/master/LICENSE) and GNU General 
+   Public License (https://github.com/strongswan/strongswan/blob/master/COPYING)
+
+
+   NetGuard (https://github.com/M66B/NetGuard) GNU GENERAL PUBLIC LICENSE Version
+    3, 29 June 2007 https://github.com/M66B/NetGuard/blob/master/LICENSE
+
+
+						
+   Mixpanel (https://github.com/mixpanel/mixpanel-android) Licensed under the
+    Apache License, Version 2.0 https://github.com/mixpanel/mixpanel-
+    android/blob/master/LICENSE
+
+
+						
+   AndroidX Security (https://developer.android.com/jetpack/androidx)
+    androidx.security:security-crypto:1.0.0 The Apache Software License, Version
+    2.0 https://github.com/androidx-releases/Security/blob/master/LICENSE
+
+
+						
+   Android Multi-Dex Library androidx.multidex:multidex:2.0.1 The Apache Software
+    License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
+
+
+						
+   Timber (https://github.com/JakeWharton/timber)
+    com.jakewharton.timber:timber:5.0.1 The Apache Software License, Version 2.0
+    http://www.apache.org/licenses/LICENSE-2.0.txt		
+										
+IPAddress (https://github.com/seancfoley/IPAddress) The Apache Software
+    License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
+
+
+						
+   ICMP4j (https://github.com/laurentbh/icmp4j) The Apache Software License,
+    Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
