@@ -1,0 +1,5 @@
+libs/*.aar
+build/
+*.log
+.gradle/
+extracted-aars/
