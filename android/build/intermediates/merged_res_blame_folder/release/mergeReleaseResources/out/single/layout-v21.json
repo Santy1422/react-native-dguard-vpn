@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.atomvpn.react-native-dguard-vpn-release-29:/layout-v21/notification_template_icon_group.xml",
+        "source": "com.atomvpn.react-native-dguard-vpn-core-1.13.1-7:/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "com.atomvpn.react-native-dguard-vpn-release-29:/layout-v21/notification_action.xml",
+        "source": "com.atomvpn.react-native-dguard-vpn-core-1.13.1-7:/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "com.atomvpn.react-native-dguard-vpn-release-29:/layout-v21/notification_template_custom_big.xml",
+        "source": "com.atomvpn.react-native-dguard-vpn-core-1.13.1-7:/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "com.atomvpn.react-native-dguard-vpn-release-29:/layout-v21/notification_action_tombstone.xml",
+        "source": "com.atomvpn.react-native-dguard-vpn-core-1.13.1-7:/layout-v21/notification_action_tombstone.xml"
+    }
+]

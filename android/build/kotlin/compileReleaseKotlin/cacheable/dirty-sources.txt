@@ -1,0 +1,2 @@
+/Users/santiagogarcia/Documents/GitHub/DGuard/DGuard/node_modules/react-native-dguard-vpn/android/src/main/java/com/atomvpn/AtomVpnModule.kt
+/Users/santiagogarcia/Documents/GitHub/DGuard/DGuard/node_modules/react-native-dguard-vpn/android/src/main/java/com/atomvpn/AtomVpnPackage.kt
