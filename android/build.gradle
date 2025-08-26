@@ -80,9 +80,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     
-    // ATOM SDK - Use actual ATOM SDK files from your GitHub
-    // Main ATOM SDK implementation
-    implementation files('libs/AtomSdk-6.0.4.aar')
+    // ATOM SDK - Use extracted JAR from AAR for compilation
+    // Main ATOM SDK implementation - classes are now in source tree
+    implementation files('extracted-aars/classes.jar')
     
     // Optional: IKS module if needed for advanced features
     // implementation files('libs/AtomIKS-6.0.4.aar')
